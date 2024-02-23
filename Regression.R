@@ -122,14 +122,14 @@ avPlots(all.fit)
 
 
 ## Testing I
-
+res <- all.fit$residuals
 plot(1:length(res),res,xlab = "index",ylab = "Residuals")
 # Independent assumption seems to be violated
 
 
 ## Testing N
 
-res <- all.fit$residuals
+
 hist(res,main = "Histogram of residuals",xlab = "Residuals")
 qqPlot(res,ylab = "Residuals")
 
