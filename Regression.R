@@ -1,6 +1,6 @@
 library(readxl)
 library(tidyverse)
-
+library(car)
 
 ST00_ps = read_excel(path= "Screen Time_Hengde.xlsx",
                      col_types = c("date" , "text" , "numeric", "text", "numeric", "numeric", "date"))
@@ -86,13 +86,49 @@ AIC <- n*log(RSS)+2*p
 
 
 
+
+
 # Comfirmation Analysis
 
 
 X_all <- rbind(X_ho,X_yf,X_cw)
-summary(lm(y_all~-1+X_all))
+combined_data <- data.frame(weekend=X_all[,2],
+                            Pickups=X_all[,3],
+                            Social.ST = y_all)
+all.fit <- lm(Social.ST~weekend+Pickups,data=combined_data)
+summary(all.fit)
 
 BETA
 SE_BETA
 
+
+
+
+
+
+
+
+# Testing LINE
+
+## Testing L
+
+avPlots(all.fit)
+
+
+## Testing I
+
+plot(1:length(res),res,xlab = "index",ylab = "Residuals")
+# Independent assumption seems to be violated
+
+
+## Testing N
+
+res <- all.fit$residuals
+hist(res,main = "Histogram of residuals",xlab = "Residuals")
+qqPlot(res,ylab = "Residuals")
+
+
+## Testing E
+
+residualPlots(all.fit,type="response")
 
