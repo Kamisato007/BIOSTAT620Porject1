@@ -35,6 +35,11 @@ colnames(ST00_ps)
 colnames(ST00_ps_yuan)
 
 
+
+
+# Federal Learning
+
+
 # Summary Statistics for Hengde Ouyang
 
 X_ho <- model.matrix(Social.ST.min~if_weekend+Pickups+Total.ST.min,data = ST00_ps)
@@ -66,6 +71,10 @@ SSXY_cw <-  t(X_cw)%*%y_cw
 
 # Calculate Beta and Sigma
 
+n1 = dim(ST00_ps)[1]
+n2 = dim(ST00_ps_yuan)[1]
+n3 = dim(ST00_ps_cw)[1]
+
 
 n = dim(ST00_ps)[1]+dim(ST00_ps_cw)[1]+dim(ST00_ps_yuan)[1]
 p = dim(X_ho)[2]
@@ -86,16 +95,26 @@ qt(0.975,n-p)
 # AIC/RSS
 
 RSS <- sum_SSY-2*t(BETA)%*%(sum_SSXY)+t(BETA)%*%(sum_SSX)%*%BETA
-y_all <- c(y_ho,y_yf,y_cw)
-TSS <- sum((y_all-mean(y_all))^2) 
+
+ybar = (n1*mean(y_ho)+n2*mean(y_yf)+n3*mean(y_cw))/n
+TSS <- sum(y_ho^2)+sum(y_yf^2)+sum(y_cw^2)-n*ybar^2
 R2_a <- 1- (RSS/(n-p))/(TSS/(n-1))
 AIC <- n*log(RSS)+2*p
+
+result <- data.frame(beta=BETA,
+                     SE = SE_BETA,
+                     t = BETA/SE_BETA)
+
+result
+
+
+
 
 
 
 # Comfirmation Analysis
 
-
+y_all <- c(y_ho,y_yf,y_cw)
 X_all <- rbind(X_ho,X_yf,X_cw)
 combined_data <- data.frame(weekend=X_all[,2],
                             Pickups=X_all[,3],
@@ -104,9 +123,13 @@ combined_data <- data.frame(weekend=X_all[,2],
 all.fit <- lm(Social.ST.min~weekend+Pickups+Total.ST.min,data=combined_data)
 summary(all.fit)
 
+
+
+
 BETA
 SE_BETA
-
+R2_a
+AIC
 
 
 
