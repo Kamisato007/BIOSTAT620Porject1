@@ -11,13 +11,17 @@ ST00_ps_yuan = read_excel(path= "ScreenTime_Yuan.xlsx",
                           col_types = c("date"  , "numeric", "numeric","date", "numeric" ))
 
 
-ST00_ps_cw = read_excel(path= "Screen Time_Chongwei.xlsx",
-                        col_types = c("date" , "text" , "numeric", "text", "numeric", "numeric", "date"
-                                      ,"numeric"))
+ST00_ps_cw = read.csv("screen time scw.csv")
+ST00_ps_cw <- ST00_ps_cw[,-1]
 
+colnames(ST00_ps_cw) <- c("Date", "Total.ST","Total.ST.min",
+                          "Social.ST", "Social.ST.min","Pickups","Pickup.1s",
+                          "if_weekend","Prop.ST","Duration")
+colnames(ST00_ps_yuan) <- c("Date", "Total.ST.min", "Social.ST.min","Pickups.1s","Pickups",
+                            "weekdays","if_weekend")
 
-
-
+ST00_ps$Prop.ST <- ST00_ps$Social.ST.min/ST00_ps$Total.ST.min
+ST00_ps$Duration <- ST00_ps$Total.ST.min/ST00_ps$Pickups
 ST00_ps$weekday = weekdays(ST00_ps$Date , abbreviate = T)
 ST00_ps = ST00_ps %>% mutate ( if_weekend = weekday %in% c("Sun", "Sat"))
 ST00_ps_yuan$weekday = weekdays(ST00_ps_yuan$Date , abbreviate = T)
@@ -25,10 +29,15 @@ ST00_ps_yuan = ST00_ps_yuan %>% mutate ( if_weekend = weekday %in% c("Sun", "Sat
 
 
 
+# Check column names
+colnames(ST00_ps_cw)
+colnames(ST00_ps)
+colnames(ST00_ps_yuan)
+
 
 # Summary Statistics for Hengde Ouyang
 
-X_ho <- model.matrix(Social.ST.min~if_weekend+Pickups,data = ST00_ps)
+X_ho <- model.matrix(Social.ST.min~if_weekend+Pickups+Total.ST.min,data = ST00_ps)
 y_ho <- ST00_ps$Social.ST.min
 SSX_ho <- t(X_ho)%*%X_ho
 SSY_ho <- t(y_ho)%*%y_ho
@@ -38,8 +47,8 @@ SSXY_ho <-  t(X_ho)%*%y_ho
 
 # Summary Statistics for Yuan Feng
 
-X_yf <- model.matrix(Social.ST ~if_weekend+Pickups,data = ST00_ps_yuan)
-y_yf <- ST00_ps_yuan$Social.ST 
+X_yf <- model.matrix(Social.ST.min ~if_weekend+Pickups+Total.ST.min,data = ST00_ps_yuan)
+y_yf <- ST00_ps_yuan$Social.ST.min 
 SSX_yf <- t(X_yf)%*%X_yf
 SSY_yf <- t(y_yf)%*%y_yf
 SSXY_yf <-  t(X_yf)%*%y_yf
@@ -47,8 +56,7 @@ SSXY_yf <-  t(X_yf)%*%y_yf
 
 # Summary Statistics for Congwei Shi
 
-colnames(ST00_ps_cw) <- colnames(ST00_ps)[c(1:7,9)]
-X_cw <- model.matrix(Social.ST.min~if_weekend+Pickups,data = ST00_ps_cw)
+X_cw <- model.matrix(Social.ST.min~if_weekend+Pickups+Total.ST.min,data = ST00_ps_cw)
 y_cw <- ST00_ps_cw$Social.ST.min 
 SSX_cw <- t(X_cw)%*%X_cw
 SSY_cw <- t(y_cw)%*%y_cw
@@ -77,14 +85,11 @@ qt(0.975,n-p)
 
 # AIC/RSS
 
-RSS <- (n-p)*SIGMA
-
+RSS <- sum_SSY-2*t(BETA)%*%(sum_SSXY)+t(BETA)%*%(sum_SSX)%*%BETA
 y_all <- c(y_ho,y_yf,y_cw)
 TSS <- sum((y_all-mean(y_all))^2) 
-R2_a <- 1- (SIGMA)/(TSS/(n-1))
+R2_a <- 1- (RSS/(n-p))/(TSS/(n-1))
 AIC <- n*log(RSS)+2*p
-
-
 
 
 
@@ -94,8 +99,9 @@ AIC <- n*log(RSS)+2*p
 X_all <- rbind(X_ho,X_yf,X_cw)
 combined_data <- data.frame(weekend=X_all[,2],
                             Pickups=X_all[,3],
-                            Social.ST = y_all)
-all.fit <- lm(Social.ST~weekend+Pickups,data=combined_data)
+                            Total.ST.min = X_all[,4],
+                            Social.ST.min = y_all)
+all.fit <- lm(Social.ST.min~weekend+Pickups+Total.ST.min,data=combined_data)
 summary(all.fit)
 
 BETA
@@ -103,7 +109,7 @@ SE_BETA
 
 
 
-res <- all.fit$residuals
+
 
 
 
@@ -131,4 +137,6 @@ qqPlot(res,ylab = "Residuals")
 ## Testing E
 
 residualPlots(all.fit,type="response")
+
+
 
