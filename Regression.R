@@ -5,7 +5,7 @@ library(car)
 ST00_ps = read_excel(path= "Screen Time_Hengde.xlsx",
                      col_types = c("date" , "text" , "numeric", "text", "numeric", "numeric", "date"))
 ST00_ps[10,]$Total.ST.min = 114
-ST00_ps$Social.ST.min = 67
+ST00_ps[10,]$Social.ST.min = 67
 
 
 ST00_ps_yuan = read_excel(path= "ScreenTime_Yuan.xlsx",
