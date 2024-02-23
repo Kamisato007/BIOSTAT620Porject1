@@ -116,9 +116,13 @@ TSS <- sum(y_ho^2)+sum(y_yf^2)+sum(y_cw^2)-n*ybar^2
 R2_a <- 1- (RSS/(n-p))/(TSS/(n-1))
 AIC <- n*log(RSS)+2*p
 
-result <- data.frame(beta=BETA,
+result <- list(all_value= data.frame(beta=BETA,
                      SE = SE_BETA,
-                     t = BETA/SE_BETA)
+                     t = BETA/SE_BETA,
+                     p =  2*pt(abs(BETA/SE_BETA),n-p,lower.tail = F)),
+               AIC = AIC,
+               R2_a = R2_a)
+               
 
 result
 
