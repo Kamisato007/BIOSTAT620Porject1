@@ -20,12 +20,26 @@ colnames(ST00_ps_cw) <- c("Date", "Total.ST","Total.ST.min",
 colnames(ST00_ps_yuan) <- c("Date", "Total.ST.min", "Social.ST.min","Pickups.1s","Pickups",
                             "weekdays","if_weekend")
 
+
+# Prop.ST & Duration & If Weekend
+class(ST00_ps$Date)
+class(ST00_ps_cw$Date)
+class(ST00_ps_yuan$Date
 ST00_ps$Prop.ST <- ST00_ps$Social.ST.min/ST00_ps$Total.ST.min
 ST00_ps$Duration <- ST00_ps$Total.ST.min/ST00_ps$Pickups
 ST00_ps$weekday = weekdays(ST00_ps$Date , abbreviate = T)
-ST00_ps = ST00_ps %>% mutate ( if_weekend = weekday %in% c("Sun", "Sat"))
+ST00_ps = ST00_ps %>% mutate (if_weekend = weekday %in% c("Sun", "Sat"))
+
+ST00_ps_cw$Prop.ST <- ST00_ps_cw$Social.ST.min/ST00_ps_cw$Total.ST.min
+ST00_ps_cw$Duration <- ST00_ps_cw$Total.ST.min/ST00_ps_cw$Pickups
+ST00_ps_cw$Date <- as.POSIXct(ST00_ps_cw$Date, format = "%Y-%m-%d", tz = "UTC")
+ST00_ps_cw$weekday = weekdays(ST00_ps_cw$Date , abbreviate = T)
+ST00_ps_cw = ST00_ps_cw %>% mutate (if_weekend = weekday %in% c("Sun", "Sat"))
+
+ST00_ps_yuan$Prop.ST <- ST00_ps_yuan$Social.ST.min/ST00_ps_yuan$Total.ST.min
+ST00_ps_yuan$Duration <- ST00_ps_yuan$Total.ST.min/ST00_ps_yuan$Pickups
 ST00_ps_yuan$weekday = weekdays(ST00_ps_yuan$Date , abbreviate = T)
-ST00_ps_yuan = ST00_ps_yuan %>% mutate ( if_weekend = weekday %in% c("Sun", "Sat"))
+ST00_ps_yuan = ST00_ps_yuan %>% mutate (if_weekend = weekday %in% c("Sun", "Sat"))
 
 
 
