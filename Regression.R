@@ -103,7 +103,7 @@ SE_BETA
 
 
 
-
+res <- all.fit$residuals
 
 
 
