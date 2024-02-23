@@ -24,7 +24,7 @@ colnames(ST00_ps_yuan) <- c("Date", "Total.ST.min", "Social.ST.min","Pickups.1s"
 # Prop.ST & Duration & If Weekend
 class(ST00_ps$Date)
 class(ST00_ps_cw$Date)
-class(ST00_ps_yuan$Date
+class(ST00_ps_yuan$Date)
 ST00_ps$Prop.ST <- ST00_ps$Social.ST.min/ST00_ps$Total.ST.min
 ST00_ps$Duration <- ST00_ps$Total.ST.min/ST00_ps$Pickups
 ST00_ps$weekday = weekdays(ST00_ps$Date , abbreviate = T)
