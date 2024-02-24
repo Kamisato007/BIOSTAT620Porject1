@@ -50,6 +50,72 @@ colnames(ST00_ps)
 colnames(ST00_ps_yuan)
 
 
+# Time Series Plots in Section 2 (Data Description)
+library(ggplot2)
+library(dplyr)
+
+# Function to plot social screen time
+plot_social_time <- function(data) {
+  ggplot(data, aes(x = Date, y = Social.ST.min, color = if_weekend)) +
+    geom_line() + # Draw lines connecting data points
+    geom_point() + # Add data points
+    scale_color_manual(values = c("TRUE" = "#156077", "FALSE" = "#f46f20")) + # Custom color for weekend/weekday
+    labs(x = "", y = "Social Screen Time (min)", color = "Weekend") + # Labeling
+    theme_minimal() + # Minimal theme for cleaner appearance
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+}
+
+# Function to plot the proportion of social screen time to total screen time
+plot_prop_st <- function(data) {
+  ggplot(data, aes(x = Date, y = Prop.ST, color = if_weekend)) +
+    geom_line() + # Draw lines connecting data points
+    geom_point() + # Add data points
+    scale_color_manual(values = c("TRUE" = "#156077", "FALSE" = "#f46f20")) + # Custom color for weekend/weekday
+    labs(x = "", y = "Proportion of Social Time", color = "Weekend") + # Labeling
+    theme_minimal() + # Minimal theme for cleaner appearance
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+}
+
+# Function to plot the total number of pickups
+plot_durations <- function(data) {
+  ggplot(data, aes(x = Date, y = Duration, color = if_weekend)) +
+    geom_line() + # Draw lines connecting data points
+    geom_point() + # Add data points
+    scale_color_manual(values = c("TRUE" = "#156077", "FALSE" = "#f46f20")) + # Custom color for weekend/weekday
+    labs(x = "", y = "Average Duration for Each Pickup", color = "Weekend") + # Labeling
+    theme_minimal() + # Minimal theme for cleaner appearance
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+}
+
+# Subject 1
+plot1 <- plot_social_time(ST00_ps)
+plot2 <- plot_prop_st(ST00_ps)
+plot3 <- plot_durations(ST00_ps)
+# Subject 2
+plot4 <- plot_social_time(ST00_ps_cw)
+plot5 <- plot_prop_st(ST00_ps_cw)
+plot6 <- plot_durations(ST00_ps_cw)
+# Subject 3
+plot7 <- plot_social_time(ST00_ps_yuan)
+plot8 <- plot_prop_st(ST00_ps_yuan)
+plot9 <- plot_durations(ST00_ps_yuan)
+
+
+library(gridExtra)
+library(patchwork)
+# Combine
+combined_plot <- (plot1 | plot2 | plot3) / 
+                 (plot4 | plot5 | plot6) / 
+                 (plot7 | plot8 | plot9) +
+                 plot_layout(guides = 'collect') & 
+                 theme(legend.position = 'bottom', 
+                       legend.text = element_text(size = 15),
+                       legend.title = element_text(size = 15))
+
+print(combined_plot)
+
+# Save
+ggsave("9_panel_plot.png", combined_plot, width = 20, height = 15)
 
 
 # Federal Learning
