@@ -1,15 +1,13 @@
 # BIOSTAT620Porject1
 This is for BIOSTAT620 Project 1.
 
-For the federated learning procedure, we have three R files from different people to generate summary statistics:
-Share_HO.R   Share_YF.R  Share_CW.R
+Sources folder contain the data from three team members.
 
-These three files are able to generate the summary statistics into rds files.
-
+For the federated learning procedure, we have three R files ("Share_XX.R") from different people to generate summary statistics
+into rds files ("Summary_Statistics_XX.rds")
 
 In the main server, rds files are used to calculate the estimated coefficients, standard errors of coefficients,
-variance of the random error, and all other statistics to perform goodness of fit.
-
+variance of the random error, and all other statistics related to perform goodness of fit.
 
 In the All.R file, it contains all the codes in our group, including combining all the data to perform linear
 regression.
