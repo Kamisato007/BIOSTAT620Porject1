@@ -14,4 +14,5 @@ variance of the random error, and all other statistics to perform goodness of fi
 In the All.R file, it contains all the codes in our group, including combining all the data to perform linear
 regression.
 
-The result for running linear regression from summary statistics is the same as the result  from all data
+The results for running linear regression from summary statistics are the same as the results 
+for running from combined data.
